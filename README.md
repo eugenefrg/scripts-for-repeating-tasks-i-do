@@ -25,3 +25,5 @@ I'm not doing that here
 also I'm calling the script "cerberus" cause it makes 3 heads and all that stuff
 
 do not attach your password to the ssh command cause that's not secure. you have been warneded
+
+ALSO i'm a mac user, this probably only works on mac.
