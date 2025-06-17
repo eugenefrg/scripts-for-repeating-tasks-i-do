@@ -1,19 +1,35 @@
 #!/bin/bash
 SCRIPT_DIR=$(dirname "$0")
 
-open_terminal_and_run() {
-    local session_id="$1"
-    open -a Terminal "./$SCRIPT_DIR/run_$session_id.sh" & # this is mac only I think
-}
+# Load environment variables from .env file in the script's directory
+if [ -f "$SCRIPT_DIR/.env" ]; then
+  source "$SCRIPT_DIR/.env"
+fi
 
---- Run for sessions 1 to 3 ---
-for i in {1..3}; do
-  open_terminal_and_run "$i"
-done
+# Create a new tmux session if it doesn't exist
+if ! tmux has-session -t cerberus 2>/dev/null; then
+    # Create new session named cerberus
+    tmux new-session -d -s cerberus
 
-# test one ?
-# open_terminal_and_run 1
+    # Enable mouse mode for scrolling and pane selection
+    tmux set-option -t cerberus mouse on
 
-echo "Opened terminal sessions 1 to 3."
+    # Create the first pane and run the first script
+    tmux send-keys -t cerberus "cd $SCRIPT_DIR && ./run_1.sh" C-m
 
-exit 0
+    # Split window into panes
+    tmux split-window -h -t cerberus
+    tmux send-keys -t cerberus "cd $SCRIPT_DIR && ./run_2.sh" C-m
+
+    tmux split-window -v -t cerberus
+    tmux send-keys -t cerberus "cd $SCRIPT_DIR && ./run_3.sh" C-m
+
+    # Select the first pane
+    tmux select-pane -t 0
+
+    # Enable synchronized input
+    tmux set-window-option -t cerberus synchronize-panes on
+fi
+
+# Attach to the session
+tmux attach-session -t cerberus
