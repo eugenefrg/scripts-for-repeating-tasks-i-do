@@ -30,5 +30,5 @@ fi
 ssh -t "${USERNAME}@${HOST2}" "
     cd ${REMOTE_DIR}
     ${REMOTE_CMD}
-    /bin/sh
+    /bin/bash
 "
